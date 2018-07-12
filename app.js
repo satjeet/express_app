@@ -1,18 +1,37 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 /* ya no es necesario con la implementacion de controllers
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 */
-var app = express();
+const app = express();
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+//connect to mongodb
+mongoose
+  .connect(
+    'mongodb://localhost:27017/express_app',
+    { useNewUrlParser: true },
+    function() {
+      console.log('Connection has been made');
+    }
+  )
+  .catch(err => {
+    console.error('App starting error:', err.stack);
+    process.exit(1);
+  });
 
 // Require file system module
-var fs = require('file-system');
+const fs = require('file-system');
 
 // Include controllers
 fs.readdirSync('controllers').forEach(function(file) {
